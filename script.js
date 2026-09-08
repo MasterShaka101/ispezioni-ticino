@@ -192,7 +192,7 @@ let currentDate =
         error
     } = await supabaseClient
         .from("bookings")
-        .select("start_date, end_date");
+        .select("company_id, start_date, end_date");
 
     if (error) {
 
