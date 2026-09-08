@@ -2,9 +2,9 @@
 // CONFIGURAZIONE SUPABASE
 // ========================================
 
-const SUPABASE_URL = https://htcuwuhebznznjpizepz.supabase.co/rest/v1/;
+const SUPABASE_URL = "https://htcuwuhebznznjpizepz.supabase.co/rest/v1/";
 
-const SUPABASE_ANON_KEY = sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O;
+const SUPABASE_ANON_KEY = "sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O";
 
 
 const supabaseClient =
