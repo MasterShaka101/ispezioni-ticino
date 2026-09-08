@@ -568,5 +568,5 @@ function getWeekdaysBetween(startString, endString) {
     });
 
 
-    loadBooking();
+    loadBookings();
 }
