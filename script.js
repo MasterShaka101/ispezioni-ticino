@@ -23,9 +23,24 @@ function parseLocalDate(dateString) {
 const companyName =
     sessionStorage.getItem("companyName");
 
+const companyRequiredDays =
+    sessionStorage.getItem("companyRequiredDays");
+
 const companyNameElement =
     document.getElementById("company-name");
 
+
+// Se siamo nel calendario e non c'è una ditta autenticata,
+// torniamo alla pagina di login.
+if (
+    document.getElementById("calendar") &&
+    (!companyName || !companyRequiredDays)
+) {
+    window.location.href = "index.html";
+}
+
+
+// Mostra il nome della ditta
 if (companyNameElement && companyName) {
 
     companyNameElement.textContent =
