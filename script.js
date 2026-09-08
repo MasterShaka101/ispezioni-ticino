@@ -29,14 +29,17 @@ if (calendar) {
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
 
-    // Per ora impostiamo i tre mesi di prova:
-    // ottobre, novembre e dicembre 2026.
+    // Numero di giorni che questa ditta deve prenotare
+    const requiredDays = 3;
 
+    // Periodo disponibile
     const startDate = new Date(2026, 9, 1);
     const endDate = new Date(2026, 11, 31);
 
+    // Mese visualizzato inizialmente
     let currentDate = new Date(2026, 9, 1);
 
+    // Date selezionate
     let selectedDates = [];
 
     const monthNames = [
@@ -69,8 +72,9 @@ if (calendar) {
         // Primo giorno del mese
         const firstDay = new Date(year, month, 1);
 
-        // Convertiamo domenica = 0
-        // in lunedì = 0
+        // Trasformiamo:
+        // domenica = 0
+        // lunedì = 0
         let startingDay = firstDay.getDay() - 1;
 
         if (startingDay === -1) {
@@ -116,10 +120,10 @@ if (calendar) {
 
             } else {
 
-                const dateString =
-                    formatDate(date);
+                const dateString = formatDate(date);
 
 
+                // Data già selezionata
                 if (selectedDates.includes(dateString)) {
 
                     dayElement.classList.add("selected");
@@ -127,14 +131,27 @@ if (calendar) {
                 }
 
 
-                dayElement.addEventListener(
-                    "click",
-                    function () {
+                // Se abbiamo già raggiunto il numero massimo
+                // e questa data non è già selezionata,
+                // la rendiamo non selezionabile.
+                if (
+                    selectedDates.length >= requiredDays &&
+                    !selectedDates.includes(dateString)
+                ) {
 
-                        toggleDate(dateString);
+                    dayElement.classList.add("disabled");
 
-                    }
-                );
+                } else {
+
+                    dayElement.addEventListener(
+                        "click",
+                        function () {
+
+                            toggleDate(dateString);
+
+                        }
+                    );
+                }
             }
 
 
@@ -178,8 +195,13 @@ if (calendar) {
         }
 
 
+        // Aggiorna il contatore
         selectedCount.textContent =
-            selectedDates.length;
+            selectedDates.length + " di " + requiredDays;
+
+
+        // Cambia il messaggio quando la selezione è completa
+        updateSelectionMessage();
     }
 
 
@@ -197,6 +219,7 @@ if (calendar) {
 
     function toggleDate(dateString) {
 
+        // Se la data è già selezionata, la togliamo
         if (selectedDates.includes(dateString)) {
 
             selectedDates =
@@ -206,11 +229,60 @@ if (calendar) {
 
         } else {
 
-            selectedDates.push(dateString);
+            // Non permettiamo di superare il limite
+            if (selectedDates.length >= requiredDays) {
+                return;
+            }
 
+            selectedDates.push(dateString);
         }
 
         renderCalendar();
+    }
+
+
+    function updateSelectionMessage() {
+
+        const selectionInfo =
+            document.querySelector(".selection-info");
+
+        if (!selectionInfo) {
+            return;
+        }
+
+
+        let message =
+            selectionInfo.querySelector(".booking-message");
+
+
+        if (!message) {
+
+            message =
+                document.createElement("div");
+
+            message.className = "booking-message";
+
+            selectionInfo.appendChild(message);
+        }
+
+
+        if (selectedDates.length === requiredDays) {
+
+            message.textContent =
+                "Hai selezionato tutti i " +
+                requiredDays +
+                " giorni. Puoi confermare la prenotazione.";
+
+        } else {
+
+            const remaining =
+                requiredDays - selectedDates.length;
+
+            message.textContent =
+                "Devi ancora selezionare " +
+                remaining +
+                (remaining === 1 ? " giorno." : " giorni.");
+        }
     }
 
 
