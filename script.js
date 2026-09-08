@@ -123,7 +123,10 @@ async function login() {
 
     const company = data[0];
 
-
+sessionStorage.setItem(
+    "companyId",
+    company.id
+);
     sessionStorage.setItem(
         "companyName",
         company.nome_ditta
