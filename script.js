@@ -326,7 +326,12 @@ renderCalendar();
 
                 // Data già selezionata
                 // Data già prenotata
-if (bookedDates.includes(dateString)) {
+if (myBookingDates.includes(dateString)) {
+
+    dayElement.classList.add("my-booking");
+
+}
+else if (bookedDates.includes(dateString)) {
 
     dayElement.classList.add("disabled");
 
