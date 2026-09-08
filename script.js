@@ -533,21 +533,25 @@ function getWeekdaysBetween(startString, endString) {
 
         if (selectedDates.length === requiredDays) {
 
-            message.textContent =
-                "Hai selezionato tutti i " +
-                requiredDays +
-                " giorni. Puoi confermare la prenotazione.";
+    message.textContent =
+        "Hai selezionato tutti i " +
+        requiredDays +
+        " giorni. Puoi confermare la prenotazione.";
 
-        } else {
+    document.getElementById("confirmBooking").disabled = false;
 
-            const remaining =
-                requiredDays - selectedDates.length;
+} else {
 
-            message.textContent =
-                "Devi ancora selezionare " +
-                remaining +
-                (remaining === 1 ? " giorno." : " giorni.");
-        }
+    const remaining =
+        requiredDays - selectedDates.length;
+
+    message.textContent =
+        "Devi ancora selezionare " +
+        remaining +
+        (remaining === 1 ? " giorno." : " giorni.");
+
+    document.getElementById("confirmBooking").disabled = true;
+}
     }
 
 
