@@ -68,7 +68,8 @@ if (calendar) {
 
         monthTitle.textContent =
             monthNames[month] + " " + year;
-periodInfo.textContent =
+
+        periodInfo.textContent =
     "Il periodo assegnato è lungo " +
     requiredDays +
     " " +
