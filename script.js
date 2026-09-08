@@ -16,6 +16,27 @@ function parseLocalDate(dateString) {
 
     return new Date(year, month - 1, day);
 }
+
+
+// NOME DELLA DITTA
+
+const companyName =
+    sessionStorage.getItem("companyName");
+
+const companyNameElement =
+    document.getElementById("company-name");
+
+if (companyNameElement && companyName) {
+
+    companyNameElement.textContent =
+        companyName;
+
+}
+
+
+// LOGIN
+
+
 async function login() {
 
     const codice =
