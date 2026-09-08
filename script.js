@@ -69,24 +69,29 @@ async function login() {
         );
 
 
+    console.log("Login ditta avviato");
+    console.log("Codice:", codice);
+
+
     const {
         data,
         error
-    } = await supabaseClient
-        .rpc(
-            "get_company_by_code",
-            {
-                p_codice: codice
-            }
-        );
+    } = await supabaseClient.rpc(
+        "get_company_by_code",
+        {
+            p_codice: codice
+        }
+    );
+
+
+    console.log("Risultato RPC:", data);
+    console.log("Errore RPC:", error);
 
 
     if (error) {
 
-        console.error(error);
-
         message.textContent =
-            error.message;
+            "Errore: " + error.message;
 
         return;
     }
@@ -118,7 +123,6 @@ async function login() {
     window.location.href =
         "calendario.html";
 }
-
 
 // --------------------------------------------------
 // CALENDARIO
