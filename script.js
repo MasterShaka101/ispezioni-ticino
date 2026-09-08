@@ -219,9 +219,19 @@ if (calendar) {
 
 function toggleDate(dateString) {
 
-    // Se abbiamo già una selezione completa,
-    // non permettiamo di modificarla cliccando sui giorni.
+    // Se i 3 giorni sono già selezionati,
+    // cliccando su QUALSIASI dei 3
+    // cancelliamo tutta la selezione.
     if (selectedDates.length === requiredDays) {
+
+        if (selectedDates.includes(dateString)) {
+
+            selectedDates = [];
+
+            renderCalendar();
+            return;
+        }
+
         return;
     }
 
@@ -236,9 +246,7 @@ function toggleDate(dateString) {
     }
 
 
-    // Seconda data:
-    // calcoliamo automaticamente i giorni feriali
-    // tra la prima data e quella cliccata.
+    // Seconda data
     if (selectedDates.length === 1) {
 
         const dates = getWeekdaysBetween(
@@ -247,8 +255,7 @@ function toggleDate(dateString) {
         );
 
 
-        // Se non sono esattamente 3 giorni,
-        // non accettiamo la selezione.
+        // Devono essere esattamente 3 giorni feriali
         if (dates.length !== requiredDays) {
 
             return;
@@ -260,6 +267,7 @@ function toggleDate(dateString) {
         renderCalendar();
     }
 }
+
 function getWeekdaysBetween(startString, endString) {
 
     const start = new Date(startString);
