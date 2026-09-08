@@ -548,6 +548,89 @@ function getWeekdaysBetween(startString, endString) {
 }
     }
 
+    const confirmBooking =
+    document.getElementById("confirmBooking");
+
+const bookingMessage =
+    document.getElementById("booking-message");
+
+
+confirmBooking.addEventListener("click", async function () {
+
+    if (selectedDates.length !== requiredDays) {
+        return;
+    }
+
+    const companyId =
+        sessionStorage.getItem("companyId");
+
+    if (!companyId) {
+
+        bookingMessage.textContent =
+            "Errore: ditta non identificata.";
+
+        return;
+    }
+
+    // La prima e l'ultima data del periodo selezionato
+    const startDateSelected =
+        selectedDates[0];
+
+    const endDateSelected =
+        selectedDates[selectedDates.length - 1];
+
+
+    confirmBooking.disabled = true;
+
+    bookingMessage.textContent =
+        "Salvataggio della prenotazione...";
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient.rpc(
+        "create_booking",
+        {
+            p_company_id: Number(companyId),
+            p_start_date: startDateSelected,
+            p_end_date: endDateSelected
+        }
+    );
+
+
+    if (error) {
+
+        console.error(
+            "Errore creazione prenotazione:",
+            error.message,
+            error.code,
+            error.details,
+            error.hint
+        );
+
+        bookingMessage.textContent =
+            "Errore: " + error.message;
+
+        confirmBooking.disabled = false;
+
+        return;
+    }
+
+
+    console.log(
+        "Prenotazione creata:",
+        data
+    );
+
+
+    bookingMessage.textContent =
+        "Prenotazione confermata con successo.";
+
+    // Ricarica le prenotazioni dal database
+    await loadBookings();
+
+});
 
     prevMonth.addEventListener("click", function () {
 
