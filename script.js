@@ -1,18 +1,75 @@
 function login() {
 
-    const username = document.getElementById("username").value;
+    const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
     const message = document.getElementById("login-message");
 
-    if (username === "test" && password === "1234") {
 
-        window.location.href = "calendario.html";
+    // Elenco delle ditte
+    const companies = {
 
-    } else {
+        test: {
+            password: "1234",
+            requiredDays: 3,
+            startDate: "2026-10-01",
+            endDate: "2026-12-31"
+        },
 
-        message.textContent = "Nome utente o password non corretti.";
+        ditta2: {
+            password: "5678",
+            requiredDays: 5,
+            startDate: "2026-10-01",
+            endDate: "2026-12-31"
+        },
 
+        ditta3: {
+            password: "abcd",
+            requiredDays: 2,
+            startDate: "2026-11-01",
+            endDate: "2026-12-31"
+        }
+
+    };
+
+
+    // Controlliamo se l'utente esiste
+    const company = companies[username];
+
+
+    if (!company || company.password !== password) {
+
+        message.textContent =
+            "Nome utente o password non corretti.";
+
+        return;
     }
+
+
+    // Salviamo temporaneamente i dati della ditta
+    // nel browser, così il calendario può leggerli.
+    sessionStorage.setItem(
+        "companyUsername",
+        username
+    );
+
+    sessionStorage.setItem(
+        "companyRequiredDays",
+        company.requiredDays
+    );
+
+    sessionStorage.setItem(
+        "companyStartDate",
+        company.startDate
+    );
+
+    sessionStorage.setItem(
+        "companyEndDate",
+        company.endDate
+    );
+
+
+    // Apriamo il calendario
+    window.location.href = "calendario.html";
 }
 
 
@@ -31,7 +88,8 @@ if (calendar) {
     const nextMonth = document.getElementById("nextMonth");
 
     // Numero di giorni che questa ditta deve prenotare
-    const requiredDays = 3;
+   const requiredDays =
+    Number(sessionStorage.getItem("companyRequiredDays")) || 3;
 
     // Periodo disponibile
     const startDate = new Date(2026, 9, 1);
