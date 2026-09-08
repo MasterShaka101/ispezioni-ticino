@@ -287,3 +287,11 @@ h1 {
     background: #ccc;
     cursor: not-allowed;
 }
+
+.calendar-day.my-booking {
+    background: #22c55e;
+    color: white;
+    border-color: #22c55e;
+    cursor: not-allowed;
+    font-weight: bold;
+}
