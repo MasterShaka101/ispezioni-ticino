@@ -219,27 +219,94 @@ if (calendar) {
 
     function toggleDate(dateString) {
 
-        // Se la data è già selezionata, la togliamo
-        if (selectedDates.includes(dateString)) {
+    // Se la data è già selezionata, la togliamo
+    if (selectedDates.includes(dateString)) {
 
-            selectedDates =
-                selectedDates.filter(
-                    date => date !== dateString
-                );
-
-        } else {
-
-            // Non permettiamo di superare il limite
-            if (selectedDates.length >= requiredDays) {
-                return;
-            }
-
-            selectedDates.push(dateString);
-        }
+        selectedDates =
+            selectedDates.filter(
+                date => date !== dateString
+            );
 
         renderCalendar();
+        return;
     }
 
+
+    // Non permettiamo di superare il limite
+    if (selectedDates.length >= requiredDays) {
+        return;
+    }
+
+
+    // Se è la prima data, la selezioniamo
+    if (selectedDates.length === 0) {
+
+        selectedDates.push(dateString);
+        renderCalendar();
+        return;
+    }
+
+
+    // Costruiamo una lista di tutti i giorni feriali
+    // compresi tra la prima data e quella cliccata.
+    const dates = getWeekdaysBetween(
+        selectedDates[0],
+        dateString
+    );
+
+
+    // La nuova selezione deve formare esattamente
+    // il numero di giorni richiesto.
+    if (dates.length !== requiredDays) {
+        return;
+    }
+
+
+    // Controlliamo che nessun giorno sia già occupato
+    // (per ora non abbiamo ancora il database).
+    selectedDates = dates;
+
+    renderCalendar();
+}
+function getWeekdaysBetween(startString, endString) {
+
+    const start = new Date(startString);
+    const end = new Date(endString);
+
+    // Se la seconda data viene prima della prima,
+    // invertiamo le date.
+    let first = start;
+    let last = end;
+
+    if (first > last) {
+        first = end;
+        last = start;
+    }
+
+
+    const result = [];
+
+    const current = new Date(first);
+
+
+    while (current <= last) {
+
+        const dayOfWeek = current.getDay();
+
+        // Lunedì = 1
+        // ...
+        // Venerdì = 5
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+
+            result.push(formatDate(current));
+        }
+
+        current.setDate(current.getDate() + 1);
+    }
+
+
+    return result;
+}
 
     function updateSelectionMessage() {
 
