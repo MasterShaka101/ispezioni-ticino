@@ -198,9 +198,12 @@ let currentDate =
     if (error) {
 
         console.error(
-            "Errore caricamento prenotazioni:",
-            error
-        );
+    "Errore caricamento prenotazioni:",
+    error.message,
+    error.code,
+    error.details,
+    error.hint
+);
 
         return;
     }
