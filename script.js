@@ -151,7 +151,6 @@ const calendar = document.getElementById("calendar");
 if (calendar) {
 
     const monthTitle = document.getElementById("monthTitle");
-    const selectedCount = document.getElementById("selectedCount");
     const periodInfo = document.getElementById("period-info");
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
@@ -393,12 +392,7 @@ else if (selectedDates.includes(dateString)) {
         }
 
 
-        // Aggiorna il contatore
-        selectedCount.textContent =
-            selectedDates.length + " di " + requiredDays;
-
-
-        // Cambia il messaggio quando la selezione è completa
+                // Cambia il messaggio quando la selezione è completa
         updateSelectionMessage();
     }
 
