@@ -26,6 +26,7 @@ if (calendar) {
 
     const monthTitle = document.getElementById("monthTitle");
     const selectedCount = document.getElementById("selectedCount");
+    const periodInfo = document.getElementById("period-info");
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
 
@@ -67,7 +68,12 @@ if (calendar) {
 
         monthTitle.textContent =
             monthNames[month] + " " + year;
-
+periodInfo.textContent =
+    "Il periodo assegnato è lungo " +
+    requiredDays +
+    " " +
+    (requiredDays === 1 ? "giorno" : "giorni") +
+    " consecutivi.";
 
         // Primo giorno del mese
         const firstDay = new Date(year, month, 1);
