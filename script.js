@@ -86,7 +86,7 @@ async function login() {
         console.error(error);
 
         message.textContent =
-            "Errore durante l'accesso.";
+            error.message;
 
         return;
     }
