@@ -257,7 +257,9 @@ saveCompanyButton.addEventListener(
             } else {
 
                 companyMessage.textContent =
-                    "Errore durante il salvataggio.";
+                    error.message;
+                
+                console.error(error);
             }
 
             return;
