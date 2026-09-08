@@ -1,3 +1,21 @@
+// ========================================
+// CONFIGURAZIONE PERIODO DI PRENOTAZIONE
+// ========================================
+
+const bookingPeriod = {
+    startDate: "2026-10-01",
+    endDate: "2026-12-31"
+};
+
+
+// Converte YYYY-MM-DD in una data locale
+function parseLocalDate(dateString) {
+
+    const [year, month, day] =
+        dateString.split("-").map(Number);
+
+    return new Date(year, month - 1, day);
+}
 function login() {
 
     const username = document.getElementById("username").value.trim();
@@ -8,28 +26,22 @@ function login() {
     // Elenco delle ditte
     const companies = {
 
-        test: {
-            password: "1234",
-            requiredDays: 3,
-            startDate: "2026-10-01",
-            endDate: "2026-12-31"
-        },
+    test: {
+        password: "1234",
+        requiredDays: 3
+    },
 
-        ditta2: {
-            password: "5678",
-            requiredDays: 5,
-            startDate: "2026-10-01",
-            endDate: "2026-12-31"
-        },
+    ditta2: {
+        password: "5678",
+        requiredDays: 5
+    },
 
-        ditta3: {
-            password: "abcd",
-            requiredDays: 2,
-            startDate: "2026-11-01",
-            endDate: "2026-12-31"
-        }
+    ditta3: {
+        password: "abcd",
+        requiredDays: 2
+    }
 
-    };
+};
 
 
     // Controlliamo se l'utente esiste
@@ -57,15 +69,6 @@ function login() {
         company.requiredDays
     );
 
-    sessionStorage.setItem(
-        "companyStartDate",
-        company.startDate
-    );
-
-    sessionStorage.setItem(
-        "companyEndDate",
-        company.endDate
-    );
 
 
     // Apriamo il calendario
@@ -91,12 +94,14 @@ if (calendar) {
    const requiredDays =
     Number(sessionStorage.getItem("companyRequiredDays")) || 3;
 
-    // Periodo disponibile
-    const startDate = new Date(2026, 9, 1);
-    const endDate = new Date(2026, 11, 31);
+const startDate =
+    parseLocalDate(bookingPeriod.startDate);
 
-    // Mese visualizzato inizialmente
-    let currentDate = new Date(2026, 9, 1);
+const endDate =
+    parseLocalDate(bookingPeriod.endDate);
+
+let currentDate =
+    new Date(startDate);
 
     // Date selezionate
     let selectedDates = [];
