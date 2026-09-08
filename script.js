@@ -217,56 +217,48 @@ if (calendar) {
     }
 
 
-    function toggleDate(dateString) {
+function toggleDate(dateString) {
 
-    // Se la data è già selezionata, la togliamo
-    if (selectedDates.includes(dateString)) {
-
-        selectedDates =
-            selectedDates.filter(
-                date => date !== dateString
-            );
-
-        renderCalendar();
+    // Se abbiamo già una selezione completa,
+    // non permettiamo di modificarla cliccando sui giorni.
+    if (selectedDates.length === requiredDays) {
         return;
     }
 
 
-    // Non permettiamo di superare il limite
-    if (selectedDates.length >= requiredDays) {
-        return;
-    }
-
-
-    // Se è la prima data, la selezioniamo
+    // Prima data
     if (selectedDates.length === 0) {
 
-        selectedDates.push(dateString);
+        selectedDates = [dateString];
+
         renderCalendar();
         return;
     }
 
 
-    // Costruiamo una lista di tutti i giorni feriali
-    // compresi tra la prima data e quella cliccata.
-    const dates = getWeekdaysBetween(
-        selectedDates[0],
-        dateString
-    );
+    // Seconda data:
+    // calcoliamo automaticamente i giorni feriali
+    // tra la prima data e quella cliccata.
+    if (selectedDates.length === 1) {
+
+        const dates = getWeekdaysBetween(
+            selectedDates[0],
+            dateString
+        );
 
 
-    // La nuova selezione deve formare esattamente
-    // il numero di giorni richiesto.
-    if (dates.length !== requiredDays) {
-        return;
+        // Se non sono esattamente 3 giorni,
+        // non accettiamo la selezione.
+        if (dates.length !== requiredDays) {
+
+            return;
+        }
+
+
+        selectedDates = dates;
+
+        renderCalendar();
     }
-
-
-    // Controlliamo che nessun giorno sia già occupato
-    // (per ora non abbiamo ancora il database).
-    selectedDates = dates;
-
-    renderCalendar();
 }
 function getWeekdaysBetween(startString, endString) {
 
