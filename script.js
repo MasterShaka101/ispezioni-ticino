@@ -156,6 +156,20 @@ if (calendar) {
     const prevMonth = document.getElementById("prevMonth");
     const nextMonth = document.getElementById("nextMonth");
 
+const SUPABASE_URL =
+    "https://htcuwuhebznznjpizepz.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+let bookedDates = [];
+    
     // Numero di giorni che questa ditta deve prenotare
    const requiredDays =
     Number(sessionStorage.getItem("companyRequiredDays")) || 3;
@@ -171,6 +185,41 @@ let currentDate =
 
     // Date selezionate
     let selectedDates = [];
+
+    async function loadBookings() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("bookings")
+        .select("start_date, end_date");
+
+    if (error) {
+
+        console.error(
+            "Errore caricamento prenotazioni:",
+            error
+        );
+
+        return;
+    }
+
+    bookedDates = [];
+
+    data.forEach(function (booking) {
+
+        const dates = getWeekdaysBetween(
+            booking.start_date,
+            booking.end_date
+        );
+
+        bookedDates.push(...dates);
+
+    });
+
+    renderCalendar();
+}
 
     const monthNames = [
         "gennaio",
@@ -260,20 +309,30 @@ let currentDate =
 
 
                 // Data già selezionata
-                if (selectedDates.includes(dateString)) {
+                // Data già prenotata
+if (bookedDates.includes(dateString)) {
 
-                    dayElement.classList.add("selected");
+    dayElement.classList.add("disabled");
 
-                }
+}
+// Data già selezionata dalla ditta corrente
+else if (selectedDates.includes(dateString)) {
+
+    dayElement.classList.add("selected");
+
+}
 
 
                 // Se abbiamo già raggiunto il numero massimo
                 // e questa data non è già selezionata,
                 // la rendiamo non selezionabile.
                 if (
-                    selectedDates.length >= requiredDays &&
-                    !selectedDates.includes(dateString)
-                ) {
+    bookedDates.includes(dateString) ||
+    (
+        selectedDates.length >= requiredDays &&
+        !selectedDates.includes(dateString)
+    )
+) {
 
                     dayElement.classList.add("disabled");
 
@@ -400,7 +459,7 @@ function toggleDate(dateString) {
 
         selectedDates = dates;
 
-        renderCalendar();
+loadBookings();
     }
 }
 
