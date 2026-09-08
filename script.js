@@ -459,7 +459,7 @@ function toggleDate(dateString) {
 
         selectedDates = dates;
 
-loadBookings();
+renderCalendar();
     }
 }
 
@@ -568,5 +568,5 @@ function getWeekdaysBetween(startString, endString) {
     });
 
 
-    renderCalendar();
+    loadBooking();
 }
