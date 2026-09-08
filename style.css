@@ -51,3 +51,102 @@ h1 {
 #login-message {
     margin-top: 15px;
 }
+.calendar-box {
+    margin-top: 30px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.calendar-header button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 6px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.calendar-header button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.weekdays,
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.weekdays div {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 5px;
+}
+
+.calendar-day {
+    min-height: 65px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: white;
+}
+
+.calendar-day:hover {
+    background: #f0f4f8;
+}
+
+.calendar-day.weekend {
+    background: #f1f1f1;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.calendar-day.empty {
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.selected {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+    font-weight: bold;
+}
+
+.selection-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f4f6f8;
+    border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        margin: 20px 10px;
+        padding: 20px;
+    }
+
+    .calendar-day {
+        min-height: 45px;
+    }
+
+    .weekdays div {
+        font-size: 12px;
+    }
+}
