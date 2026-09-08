@@ -347,27 +347,30 @@ else if (selectedDates.includes(dateString)) {
                 // Se abbiamo già raggiunto il numero massimo
                 // e questa data non è già selezionata,
                 // la rendiamo non selezionabile.
-                if (
+if (
     bookedDates.includes(dateString) ||
+    hasBooking ||
     (
         selectedDates.length >= requiredDays &&
         !selectedDates.includes(dateString)
     )
 ) {
 
-                    dayElement.classList.add("disabled");
+    if (!myBookingDates.includes(dateString)) {
+        dayElement.classList.add("disabled");
+    }
 
-                } else {
+} else {
 
-                    dayElement.addEventListener(
-                        "click",
-                        function () {
+    dayElement.addEventListener(
+        "click",
+        function () {
 
-                            toggleDate(dateString);
+            toggleDate(dateString);
 
-                        }
-                    );
-                }
+        }
+    );
+}
             }
 
 
