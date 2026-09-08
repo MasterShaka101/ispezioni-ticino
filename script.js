@@ -16,63 +16,86 @@ function parseLocalDate(dateString) {
 
     return new Date(year, month - 1, day);
 }
-function login() {
+async function login() {
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("login-message");
+    const codice =
+        document.getElementById("username").value.trim();
 
-
-    // Elenco delle ditte
-    const companies = {
-
-    test: {
-        password: "1234",
-        requiredDays: 3
-    },
-
-    ditta2: {
-        password: "5678",
-        requiredDays: 5
-    },
-
-    ditta3: {
-        password: "abcd",
-        requiredDays: 2
-    }
-
-};
+    const message =
+        document.getElementById("login-message");
 
 
-    // Controlliamo se l'utente esiste
-    const company = companies[username];
-
-
-    if (!company || company.password !== password) {
+    if (!codice) {
 
         message.textContent =
-            "Nome utente o password non corretti.";
+            "Inserisci il codice univoco.";
 
         return;
     }
 
 
-    // Salviamo temporaneamente i dati della ditta
-    // nel browser, così il calendario può leggerli.
+    const SUPABASE_URL =
+        "https://htcuwuhebznznjpizepz.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+        "sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O";
+
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .rpc(
+            "get_company_by_code",
+            {
+                p_codice: codice
+            }
+        );
+
+
+    if (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Errore durante l'accesso.";
+
+        return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+        message.textContent =
+            "Codice univoco non valido.";
+
+        return;
+    }
+
+
+    const company = data[0];
+
+
     sessionStorage.setItem(
-        "companyUsername",
-        username
+        "companyName",
+        company.nome_ditta
     );
 
     sessionStorage.setItem(
         "companyRequiredDays",
-        company.requiredDays
+        company.numero_giorni
     );
 
 
-
-    // Apriamo il calendario
-    window.location.href = "calendario.html";
+    window.location.href =
+        "calendario.html";
 }
 
 
