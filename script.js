@@ -168,6 +168,8 @@ const supabaseClient =
     );
 
 let bookedDates = [];
+let myBookingDates = [];
+let hasBooking = false;
     
     // Numero di giorni che questa ditta deve prenotare
    const requiredDays =
@@ -208,19 +210,31 @@ let currentDate =
     }
 
     bookedDates = [];
+myBookingDates = [];
+hasBooking = false;
 
-    data.forEach(function (booking) {
+const currentCompanyId =
+    Number(sessionStorage.getItem("companyId"));
 
-        const dates = getWeekdaysBetween(
-            booking.start_date,
-            booking.end_date
-        );
+data.forEach(function (booking) {
 
-        bookedDates.push(...dates);
+    const dates = getWeekdaysBetween(
+        booking.start_date,
+        booking.end_date
+    );
 
-    });
+    bookedDates.push(...dates);
 
-    renderCalendar();
+    if (Number(booking.company_id) === currentCompanyId) {
+
+        myBookingDates.push(...dates);
+
+        hasBooking = true;
+    }
+
+});
+
+renderCalendar();
 }
 
     const monthNames = [
