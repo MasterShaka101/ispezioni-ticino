@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calendario - Ispezioni Ticino</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Ispezioni Ticino</h1>
+
+        <p>Calendario delle prenotazioni</p>
+
+        <div class="calendar-box">
+
+            <div class="calendar-header">
+                <button id="prevMonth">‹</button>
+
+                <h2 id="monthTitle"></h2>
+
+                <button id="nextMonth">›</button>
+            </div>
+
+            <div class="weekdays">
+                <div>Lun</div>
+                <div>Mar</div>
+                <div>Mer</div>
+                <div>Gio</div>
+                <div>Ven</div>
+                <div>Sab</div>
+                <div>Dom</div>
+            </div>
+
+            <div id="calendar"></div>
+
+            <div class="selection-info">
+                <strong>Date selezionate:</strong>
+                <span id="selectedCount">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
