@@ -547,7 +547,7 @@ function getWeekdaysBetween(startString, endString) {
         }
 
 
-        iif (hasBooking) {
+        if (hasBooking) {
 
     message.textContent =
         "Hai confermato " +
