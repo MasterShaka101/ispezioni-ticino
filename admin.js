@@ -82,7 +82,7 @@ loginButton.addEventListener(
         if (error) {
 
             loginMessage.textContent =
-                "Email o password non corretti.";
+                error.message;
 
             return;
         }
