@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Amministrazione - Ispezioni Ticino</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Ispezioni Ticino</h1>
+
+        <p>Area amministrativa</p>
+
+
+        <!-- LOGIN AMMINISTRATORE -->
+
+        <div id="admin-login">
+
+            <h2>Accesso amministratore</h2>
+
+            <label for="admin-email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="admin-email"
+                placeholder="La tua email"
+            >
+
+            <label for="admin-password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="admin-password"
+                placeholder="Password"
+            >
+
+            <button id="login-button">
+                Accedi
+            </button>
+
+            <p id="login-message"></p>
+
+        </div>
+
+
+        <!-- AREA GESTIONE DITTE -->
+
+        <div id="admin-area" class="hidden">
+
+            <div class="admin-header">
+
+                <h2>Ditte</h2>
+
+                <button
+                    id="add-company-button"
+                    class="plus-button"
+                >
+                    +
+                </button>
+
+            </div>
+
+
+            <!-- FINESTRA INSERIMENTO -->
+
+            <div
+                id="company-form"
+                class="company-form hidden"
+            >
+
+                <h3>Nuova ditta</h3>
+
+                <label for="company-name">
+                    Nome ditta
+                </label>
+
+                <input
+                    type="text"
+                    id="company-name"
+                    placeholder="Nome della ditta"
+                >
+
+
+                <label for="company-code">
+                    Codice univoco
+                </label>
+
+                <input
+                    type="text"
+                    id="company-code"
+                    placeholder="Codice/password"
+                >
+
+
+                <label for="company-days">
+                    Numero di giorni
+                </label>
+
+                <input
+                    type="number"
+                    id="company-days"
+                    min="1"
+                    max="10"
+                    placeholder="Da 1 a 10"
+                >
+
+
+                <div class="form-buttons">
+
+                    <button id="save-company-button">
+                        Salva
+                    </button>
+
+                    <button id="cancel-company-button">
+                        Annulla
+                    </button>
+
+                </div>
+
+                <p id="company-message"></p>
+
+            </div>
+
+
+            <!-- TABELLA DITTE -->
+
+            <div class="companies-table">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Nome ditta</th>
+
+                            <th>Codice univoco</th>
+
+                            <th>Giorni</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="companies-list">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <button
+                id="logout-button"
+                class="logout-button"
+            >
+                Esci
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Libreria Supabase -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="admin.js"></script>
+
+</body>
+
+</html>
