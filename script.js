@@ -1018,3 +1018,16 @@ if (calendar) {
         loadBookings();
     }
 }
+// Precompila il codice se presente nell'URL
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const codice = params.get("codice");
+
+    if (codice) {
+        const usernameInput = document.getElementById("username");
+
+        if (usernameInput) {
+            usernameInput.value = codice;
+        }
+    }
+});
