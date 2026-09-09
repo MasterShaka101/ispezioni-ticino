@@ -668,15 +668,6 @@ function updateSelectionMessage() {
 
 // POPUP CONFERMA PRENOTAZIONE
 
-const confirmationModal =
-    document.getElementById("confirmation-modal");
-
-const cancelConfirmation =
-    document.getElementById("cancel-confirmation");
-
-const confirmFinal =
-    document.getElementById("confirm-final");
-
 
 // Clic su "Conferma prenotazione"
 // Apre il popup senza ancora salvare nulla.
