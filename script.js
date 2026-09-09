@@ -170,6 +170,7 @@ const supabaseClient =
 let bookedDates = [];
 let myBookingDates = [];
 let hasBooking = false;
+let blockedDates = [];
     
     // Numero di giorni che questa ditta deve prenotare
    const requiredDays =
@@ -189,6 +190,33 @@ let currentDate =
 
     async function loadBookings() {
 
+const {
+    data: blockedData,
+    error: blockedError
+} = await supabaseClient
+    .from("blocked_days")
+    .select("blocked_date");
+
+
+if (blockedError) {
+
+    console.error(
+        "Errore caricamento giorni bloccati:",
+        blockedError.message,
+        blockedError.code,
+        blockedError.details,
+        blockedError.hint
+    );
+
+} else {
+
+    blockedDates =
+        blockedData.map(function (item) {
+            return item.blocked_date;
+        });
+
+}
+        
     const {
         data,
         error
