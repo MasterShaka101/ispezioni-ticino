@@ -603,16 +603,10 @@ function updateSelectionMessage() {
     }
 
     let message =
-        selectionInfo.querySelector(".booking-message");
+        document.getElementById("booking-message");
 
     if (!message) {
-
-        message =
-            document.createElement("div");
-
-        message.className = "booking-message";
-
-        selectionInfo.appendChild(message);
+        return;
     }
 
     if (hasBooking) {
