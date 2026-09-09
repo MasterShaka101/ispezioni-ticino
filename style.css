@@ -334,3 +334,16 @@ h1 {
 .bookings-table tbody tr:hover {
     background: #f8fafc;
 }
+
+.delete-booking-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+}
+
+.delete-booking-button:hover {
+    background: #b91c1c;
+}
