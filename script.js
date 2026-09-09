@@ -593,66 +593,64 @@ function getWeekdaysBetween(startString, endString) {
     return result;
 }
 
-    function updateSelectionMessage() {
+function updateSelectionMessage() {
 
-        const selectionInfo =
-            document.querySelector(".selection-info");
+    const selectionInfo =
+        document.querySelector(".selection-info");
 
-        if (!selectionInfo) {
-            return;
-        }
-
-
-        let message =
-            selectionInfo.querySelector(".booking-message");
-
-
-        if (!message) {
-
-            message =
-                document.createElement("div");
-
-            message.className = "booking-message";
-
-            selectionInfo.appendChild(message);
-        }
-
-
-        if (hasBooking) {
-
-    message.textContent =
-        "Hai confermato " +
-        requiredDays +
-        " " +
-        (requiredDays === 1 ? "giorno." : "giorni.") +
-        " Per cambiare data contattare il responsabile.";
-
-    document.getElementById("").disabled = true;
-
-}
-else if (selectedDates.length === requiredDays) {
-
-    message.textContent =
-        "Hai selezionato tutti i " +
-        requiredDays +
-        " giorni. Puoi confermare la prenotazione.";
-
-    document.getElementById("").disabled = false;
-
-} else {
-
-    const remaining =
-        requiredDays - selectedDates.length;
-
-    message.textContent =
-        "Devi ancora selezionare " +
-        remaining +
-        (remaining === 1 ? " giorno." : " giorni.");
-
-    document.getElementById("").disabled = true;
-}
+    if (!selectionInfo) {
+        return;
     }
 
+    let message =
+        selectionInfo.querySelector(".booking-message");
+
+    if (!message) {
+
+        message =
+            document.createElement("div");
+
+        message.className = "booking-message";
+
+        selectionInfo.appendChild(message);
+    }
+
+    if (hasBooking) {
+
+        message.textContent =
+            "Hai confermato " +
+            requiredDays +
+            " " +
+            (requiredDays === 1 ? "giorno." : "giorni.") +
+            " Per cambiare data contattare il responsabile.";
+
+        document.getElementById("confirmBooking").disabled = true;
+
+    }
+    else if (selectedDates.length === requiredDays) {
+
+        message.textContent =
+            "Hai selezionato tutti i " +
+            requiredDays +
+            " giorni. Puoi confermare la prenotazione.";
+
+        document.getElementById("confirmBooking").disabled = false;
+
+    }
+    else {
+
+        const remaining =
+            requiredDays - selectedDates.length;
+
+        message.textContent =
+            "Devi ancora selezionare " +
+            remaining +
+            (remaining === 1 ? " giorno." : " giorni.");
+
+        document.getElementById("confirmBooking").disabled = true;
+    }
+}
+    
     const confirmBooking =
     document.getElementById("confirmBooking");
 
