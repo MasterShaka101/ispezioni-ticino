@@ -441,6 +441,14 @@ async function caricaPrenotazioni() {
             </td>
 
             <td>
+
+                <button
+                    class="delete-booking-button"
+                    data-id="${booking.id}"
+                >
+                    Elimina
+                </button>
+
             </td>
 
         `;
@@ -449,6 +457,67 @@ async function caricaPrenotazioni() {
         bookingsList.appendChild(row);
 
     });
+
+
+    document
+        .querySelectorAll(".delete-booking-button")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    eliminaPrenotazione(
+                        button.dataset.id
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+// ========================================
+// ELIMINA PRENOTAZIONE
+// ========================================
+
+async function eliminaPrenotazione(id) {
+
+    const conferma =
+        confirm(
+            "Vuoi davvero eliminare questa prenotazione?"
+        );
+
+
+    if (!conferma) {
+        return;
+    }
+
+
+    const { error } =
+        await supabaseClient
+            .from("bookings")
+            .delete()
+            .eq("id", id);
+
+
+    if (error) {
+
+        alert(
+            "Errore durante l'eliminazione della prenotazione."
+        );
+
+        console.error(
+            "Errore eliminazione prenotazione:",
+            error
+        );
+
+        return;
+    }
+
+
+    caricaPrenotazioni();
 
 }
 
