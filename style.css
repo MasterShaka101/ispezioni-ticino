@@ -149,10 +149,19 @@ h1 {
 
     .calendar-day {
         min-height: 45px;
+        font-size: 14px;
     }
 
     .weekdays div {
         font-size: 12px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
     }
 }
 /* ========================================
