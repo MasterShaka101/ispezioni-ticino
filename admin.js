@@ -51,6 +51,8 @@ const companyMessage =
 const companiesList =
     document.getElementById("companies-list");
 
+const bookingsList =
+    document.getElementById("bookings-list");
 
 // ========================================
 // LOGIN AMMINISTRATORE
@@ -93,6 +95,7 @@ loginButton.addEventListener(
         mostraAreaAdmin();
 
         caricaDitte();
+        caricaPrenotazioni();
 
     }
 );
@@ -127,7 +130,8 @@ async function controllaSessione() {
         mostraAreaAdmin();
 
         caricaDitte();
-
+        caricaPrenotazioni();
+        
     }
 
 }
@@ -357,6 +361,94 @@ async function caricaDitte() {
             );
 
         });
+
+}
+
+// ========================================
+// CARICA PRENOTAZIONI
+// ========================================
+
+async function caricaPrenotazioni() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("bookings")
+        .select(`
+            id,
+            company_id,
+            start_date,
+            end_date,
+            companies (
+                nome_ditta
+            )
+        `)
+        .order(
+            "start_date",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        bookingsList.innerHTML =
+            "<tr><td colspan='4'>Errore nel caricamento delle prenotazioni.</td></tr>";
+
+        console.error(
+            "Errore prenotazioni:",
+            error
+        );
+
+        return;
+    }
+
+
+    bookingsList.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        bookingsList.innerHTML =
+            "<tr><td colspan='4'>Nessuna prenotazione.</td></tr>";
+
+        return;
+    }
+
+
+    data.forEach(function (booking) {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(
+                    booking.companies?.nome_ditta || ""
+                )}
+            </td>
+
+            <td>
+                ${booking.start_date}
+            </td>
+
+            <td>
+                ${booking.end_date}
+            </td>
+
+            <td>
+            </td>
+
+        `;
+
+
+        bookingsList.appendChild(row);
+
+    });
 
 }
 
