@@ -54,6 +54,15 @@ const companiesList =
 const bookingsList =
     document.getElementById("bookings-list");
 
+const blockedDaysList =
+    document.getElementById("blocked-days-list");
+
+const addBlockedDayButton =
+    document.getElementById("add-blocked-day-button");
+
+const blockedDayMessage =
+    document.getElementById("blocked-day-message");
+
 // ========================================
 // LOGIN AMMINISTRATORE
 // ========================================
@@ -96,6 +105,7 @@ loginButton.addEventListener(
 
         caricaDitte();
         caricaPrenotazioni();
+        caricaGiorniBloccati();
 
     }
 );
@@ -131,6 +141,7 @@ async function controllaSessione() {
 
         caricaDitte();
         caricaPrenotazioni();
+        caricaGiorniBloccati();
         
     }
 
@@ -468,6 +479,108 @@ async function caricaPrenotazioni() {
                 function () {
 
                     eliminaPrenotazione(
+                        button.dataset.id
+                    );
+
+                }
+            );
+
+        });
+
+}
+
+// ========================================
+// CARICA GIORNI BLOCCATI
+// ========================================
+
+async function caricaGiorniBloccati() {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("blocked_days")
+        .select(
+            "id, blocked_date, reason"
+        )
+        .order(
+            "blocked_date",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        blockedDaysList.innerHTML =
+            "<tr><td colspan='3'>Errore nel caricamento dei giorni bloccati.</td></tr>";
+
+        console.error(
+            "Errore giorni bloccati:",
+            error
+        );
+
+        return;
+    }
+
+
+    blockedDaysList.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        blockedDaysList.innerHTML =
+            "<tr><td colspan='3'>Nessun giorno bloccato.</td></tr>";
+
+        return;
+    }
+
+
+    data.forEach(function (blockedDay) {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${blockedDay.blocked_date}
+            </td>
+
+            <td>
+                ${escapeHtml(blockedDay.reason)}
+            </td>
+
+            <td>
+
+                <button
+                    class="delete-blocked-day-button"
+                    data-id="${blockedDay.id}"
+                >
+                    Elimina
+                </button>
+
+            </td>
+
+        `;
+
+
+        blockedDaysList.appendChild(row);
+
+    });
+
+
+    document
+        .querySelectorAll(".delete-blocked-day-button")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    eliminaGiornoBloccato(
                         button.dataset.id
                     );
 
