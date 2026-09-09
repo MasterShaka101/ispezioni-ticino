@@ -666,6 +666,20 @@ confirmBooking.addEventListener("click", async function () {
         return;
     }
 
+
+    const conferma =
+        confirm(
+            "Le date selezionate verranno confermate.\n\n" +
+            "Riceverete nei prossimi giorni una circolare di appuntamento " +
+            "per posta cartacea con la conferma e i dettagli.\n\n" +
+            "Per modificare le date in futuro, contattare il responsabile dell'USAS."
+        );
+
+
+    if (!conferma) {
+        return;
+    }
+
     const companyId =
         sessionStorage.getItem("companyId");
 
