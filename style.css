@@ -299,3 +299,38 @@ h1 {
 .booking-message {
     font-weight: bold;
 }
+
+/* ========================================
+   TABELLA PRENOTAZIONI ADMIN
+   ======================================== */
+
+.bookings-table {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.bookings-table h2 {
+    margin-bottom: 15px;
+}
+
+.bookings-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.bookings-table th {
+    background: #f4f6f8;
+    font-weight: bold;
+}
+
+.bookings-table tbody tr:hover {
+    background: #f8fafc;
+}
