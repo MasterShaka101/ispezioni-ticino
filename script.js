@@ -465,8 +465,8 @@ if (
 
 function toggleDate(dateString) {
 
-    // Se i 3 giorni sono già selezionati,
-    // cliccando su QUALSIASI dei 3
+    // Se abbiamo già selezionato tutti i giorni,
+    // cliccando su uno dei giorni selezionati
     // cancelliamo tutta la selezione.
     if (selectedDates.length === requiredDays) {
 
@@ -475,8 +475,25 @@ function toggleDate(dateString) {
             selectedDates = [];
 
             renderCalendar();
+
             return;
         }
+
+        return;
+    }
+
+
+    // Se abbiamo selezionato un solo giorno
+    // e clicchiamo nuovamente sullo stesso giorno,
+    // cancelliamo la selezione.
+    if (
+        selectedDates.length === 1 &&
+        selectedDates[0] === dateString
+    ) {
+
+        selectedDates = [];
+
+        renderCalendar();
 
         return;
     }
@@ -488,6 +505,7 @@ function toggleDate(dateString) {
         selectedDates = [dateString];
 
         renderCalendar();
+
         return;
     }
 
@@ -495,14 +513,35 @@ function toggleDate(dateString) {
     // Seconda data
     if (selectedDates.length === 1) {
 
-        const dates = getWeekdaysBetween(
-            selectedDates[0],
-            dateString
-        );
+        const dates =
+            getWeekdaysBetween(
+                selectedDates[0],
+                dateString
+            );
 
 
-        // Devono essere esattamente 3 giorni feriali
+        // Il periodo deve avere esattamente
+        // il numero di giorni richiesti.
         if (dates.length !== requiredDays) {
+
+            return;
+        }
+
+
+        // Controlliamo che nessuna delle date
+        // del periodo sia già occupata o bloccata.
+        const periodUnavailable =
+            dates.some(function (date) {
+
+                return (
+                    bookedDates.includes(date) ||
+                    blockedDates.includes(date)
+                );
+
+            });
+
+
+        if (periodUnavailable) {
 
             return;
         }
@@ -510,7 +549,7 @@ function toggleDate(dateString) {
 
         selectedDates = dates;
 
-renderCalendar();
+        renderCalendar();
     }
 }
 
