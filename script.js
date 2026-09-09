@@ -627,7 +627,7 @@ function getWeekdaysBetween(startString, endString) {
         (requiredDays === 1 ? "giorno." : "giorni.") +
         " Per cambiare data contattare il responsabile.";
 
-    document.getElementById("confirmBooking").disabled = true;
+    document.getElementById("").disabled = true;
 
 }
 else if (selectedDates.length === requiredDays) {
@@ -637,7 +637,7 @@ else if (selectedDates.length === requiredDays) {
         requiredDays +
         " giorni. Puoi confermare la prenotazione.";
 
-    document.getElementById("confirmBooking").disabled = false;
+    document.getElementById("").disabled = false;
 
 } else {
 
@@ -649,34 +649,62 @@ else if (selectedDates.length === requiredDays) {
         remaining +
         (remaining === 1 ? " giorno." : " giorni.");
 
-    document.getElementById("confirmBooking").disabled = true;
+    document.getElementById("").disabled = true;
 }
     }
 
     const confirmBooking =
     document.getElementById("confirmBooking");
 
-const bookingMessage =
+    const bookingMessage =
     document.getElementById("booking-message");
+    
+    const confirmationModal =
+    document.getElementById("confirmation-modal");
+
+    const cancelConfirmation =
+    document.getElementById("cancel-confirmation");
+
+    const confirmFinal =
+    document.getElementById("confirm-final");
+
+// POPUP CONFERMA PRENOTAZIONE
+
+const confirmationModal =
+    document.getElementById("confirmation-modal");
+
+const cancelConfirmation =
+    document.getElementById("cancel-confirmation");
+
+const confirmFinal =
+    document.getElementById("confirm-final");
 
 
-confirmBooking.addEventListener("click", async function () {
+// Clic su "Conferma prenotazione"
+// Apre il popup senza ancora salvare nulla.
+confirmBooking.addEventListener("click", function () {
 
     if (selectedDates.length !== requiredDays) {
         return;
     }
 
-
-    const conferma =
-        confirm(
-            "Le date selezionate verranno confermate.\n\n" +
-            "Riceverete nei prossimi giorni una circolare di appuntamento " +
-            "per posta cartacea con la conferma e i dettagli.\n\n" +
-            "Per modificare le date in futuro, contattare il responsabile dell'USAS."
-        );
+    confirmationModal.classList.remove("hidden");
+});
 
 
-    if (!conferma) {
+// Clic su "Annulla"
+// Chiude il popup e mantiene le date selezionate.
+cancelConfirmation.addEventListener("click", function () {
+
+    confirmationModal.classList.add("hidden");
+});
+
+
+// Clic su "Conferma definitiva"
+// Qui viene effettivamente salvata la prenotazione.
+confirmFinal.addEventListener("click", async function () {
+
+    if (selectedDates.length !== requiredDays) {
         return;
     }
 
@@ -685,11 +713,14 @@ confirmBooking.addEventListener("click", async function () {
 
     if (!companyId) {
 
+        confirmationModal.classList.add("hidden");
+
         bookingMessage.textContent =
             "Errore: ditta non identificata.";
 
         return;
     }
+
 
     // La prima e l'ultima data del periodo selezionato
     const startDateSelected =
@@ -699,7 +730,7 @@ confirmBooking.addEventListener("click", async function () {
         selectedDates[selectedDates.length - 1];
 
 
-    confirmBooking.disabled = true;
+    confirmFinal.disabled = true;
 
     bookingMessage.textContent =
         "Salvataggio della prenotazione...";
@@ -728,10 +759,12 @@ confirmBooking.addEventListener("click", async function () {
             error.hint
         );
 
+        confirmationModal.classList.add("hidden");
+
         bookingMessage.textContent =
             "Errore: " + error.message;
 
-        confirmBooking.disabled = false;
+        confirmFinal.disabled = false;
 
         return;
     }
@@ -743,13 +776,24 @@ confirmBooking.addEventListener("click", async function () {
     );
 
 
+    // Chiude il popup dopo la conferma
+    confirmationModal.classList.add("hidden");
+
+
+    // Messaggio definitivo
     bookingMessage.textContent =
-        "Prenotazione confermata con successo.";
+        "Hai confermato " +
+        requiredDays +
+        " " +
+        (requiredDays === 1 ? "giorno." : "giorni.") +
+        " Per cambiare data contattare il responsabile.";
+
 
     // Ricarica le prenotazioni dal database
     await loadBookings();
 
 });
+
 
     prevMonth.addEventListener("click", function () {
 
