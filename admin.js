@@ -592,6 +592,138 @@ async function caricaGiorniBloccati() {
 }
 
 // ========================================
+// AGGIUNGI GIORNO BLOCCATO
+// ========================================
+
+addBlockedDayButton.addEventListener(
+    "click",
+    async function () {
+
+        const date =
+            document
+                .getElementById("blocked-date")
+                .value
+                .trim();
+
+        const reason =
+            document
+                .getElementById("blocked-reason")
+                .value
+                .trim();
+
+
+        if (!date) {
+
+            blockedDayMessage.textContent =
+                "Seleziona una data.";
+
+            return;
+        }
+
+
+        if (!reason) {
+
+            blockedDayMessage.textContent =
+                "Inserisci il motivo.";
+
+            return;
+        }
+
+
+        const { error } =
+            await supabaseClient
+                .from("blocked_days")
+                .insert([
+                    {
+                        blocked_date: date,
+                        reason: reason
+                    }
+                ]);
+
+
+        if (error) {
+
+            if (error.code === "23505") {
+
+                blockedDayMessage.textContent =
+                    "Questa data è già bloccata.";
+
+            } else {
+
+                blockedDayMessage.textContent =
+                    "Errore: " + error.message;
+
+                console.error(
+                    "Errore aggiunta giorno bloccato:",
+                    error
+                );
+            }
+
+            return;
+        }
+
+
+        document.getElementById(
+            "blocked-date"
+        ).value = "";
+
+        document.getElementById(
+            "blocked-reason"
+        ).value = "";
+
+        blockedDayMessage.textContent =
+            "Giorno bloccato aggiunto.";
+
+
+        caricaGiorniBloccati();
+
+    }
+);
+
+// ========================================
+// ELIMINA GIORNO BLOCCATO
+// ========================================
+
+async function eliminaGiornoBloccato(id) {
+
+    const conferma =
+        confirm(
+            "Vuoi davvero eliminare questo giorno bloccato?"
+        );
+
+
+    if (!conferma) {
+        return;
+    }
+
+
+    const { error } =
+        await supabaseClient
+            .from("blocked_days")
+            .delete()
+            .eq("id", id);
+
+
+    if (error) {
+
+        alert(
+            "Errore durante l'eliminazione."
+        );
+
+        console.error(
+            "Errore eliminazione giorno bloccato:",
+            error
+        );
+
+        return;
+    }
+
+
+    caricaGiorniBloccati();
+
+}
+
+// ========================================
 // ELIMINA PRENOTAZIONE
 // ========================================
 
