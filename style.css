@@ -420,4 +420,29 @@ h1 {
 #confirm-final {
     background: #2563eb;
     color: white;
+
+    .disclaimer {
+    max-width: 700px;
+    margin: 40px auto 0;
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #d9dee5;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.disclaimer strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.disclaimer p {
+    margin: 0 0 10px;
+}
+
+.disclaimer p:last-child {
+    margin-bottom: 0;
+}
 }
