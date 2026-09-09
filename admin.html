@@ -198,6 +198,65 @@
                 </table>
 
             </div>
+
+            <!-- GIORNI BLOCCATI -->
+
+            <div class="blocked-days-section">
+
+                <h2>Giorni bloccati</h2>
+
+                <div class="blocked-day-form">
+
+                    <label for="blocked-date">
+                        Data
+                    </label>
+
+                    <input
+                        type="date"
+                        id="blocked-date"
+                    >
+
+                    <label for="blocked-reason">
+                        Motivo
+                    </label>
+
+                    <input
+                        type="text"
+                        id="blocked-reason"
+                        placeholder="Festivo, vacanze, altro..."
+                    >
+
+                    <button id="add-blocked-day-button">
+                        Aggiungi giorno
+                    </button>
+
+                    <p id="blocked-day-message"></p>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Data</th>
+
+                            <th>Motivo</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="blocked-days-list">
+                    </tbody>
+
+                </table>
+
+            </div>
             
             <button
                 id="logout-button"
