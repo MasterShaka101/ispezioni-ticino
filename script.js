@@ -359,7 +359,10 @@ if (myBookingDates.includes(dateString)) {
     dayElement.classList.add("my-booking");
 
 }
-else if (bookedDates.includes(dateString)) {
+else if (
+    bookedDates.includes(dateString) ||
+    blockedDates.includes(dateString)
+) {
 
     dayElement.classList.add("disabled");
 
@@ -377,6 +380,7 @@ else if (selectedDates.includes(dateString)) {
                 // la rendiamo non selezionabile.
 if (
     bookedDates.includes(dateString) ||
+    blockedDates.includes(dateString) ||
     hasBooking ||
     (
         selectedDates.length >= requiredDays &&
