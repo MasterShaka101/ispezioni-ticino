@@ -2,10 +2,11 @@
 // CONFIGURAZIONE SUPABASE
 // ========================================
 
-const SUPABASE_URL = "https://htcuwuhebznznjpizepz.supabase.co";
+const SUPABASE_URL =
+    "https://htcuwuhebznznjpizepz.supabase.co";
 
-const SUPABASE_ANON_KEY = "sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O";
-
+const SUPABASE_ANON_KEY =
+    "sb_publishable_AVWMx6QAsgorykTKjF8RGA_xYSw9G_O";
 
 const supabaseClient =
     window.supabase.createClient(
@@ -63,6 +64,77 @@ const addBlockedDayButton =
 const blockedDayMessage =
     document.getElementById("blocked-day-message");
 
+
+// ========================================
+// FUNZIONI DI SUPPORTO
+// ========================================
+
+function mostraAreaAdmin() {
+
+    loginArea.classList.add("hidden");
+
+    adminArea.classList.remove("hidden");
+}
+
+
+function mostraAreaLogin() {
+
+    adminArea.classList.add("hidden");
+
+    loginArea.classList.remove("hidden");
+}
+
+
+function mostraErrore(element, message) {
+
+    if (element) {
+        element.textContent = message;
+    }
+}
+
+
+function creaCella(text) {
+
+    const cell =
+        document.createElement("td");
+
+    cell.textContent =
+        text ?? "";
+
+    return cell;
+}
+
+
+function creaPulsanteElimina(
+    className,
+    id,
+    callback
+) {
+
+    const button =
+        document.createElement("button");
+
+    button.className =
+        className;
+
+    button.dataset.id =
+        id;
+
+    button.textContent =
+        "Elimina";
+
+    button.addEventListener(
+        "click",
+        function () {
+
+            callback(id);
+        }
+    );
+
+    return button;
+}
+
+
 // ========================================
 // LOGIN AMMINISTRATORE
 // ========================================
@@ -83,6 +155,21 @@ loginButton.addEventListener(
                 .value;
 
 
+        if (!email || !password) {
+
+            mostraErrore(
+                loginMessage,
+                "Inserisci email e password."
+            );
+
+            return;
+        }
+
+
+        loginButton.disabled =
+            true;
+
+
         const { error } =
             await supabaseClient.auth.signInWithPassword({
                 email: email,
@@ -90,38 +177,33 @@ loginButton.addEventListener(
             });
 
 
+        loginButton.disabled =
+            false;
+
+
         if (error) {
 
-            loginMessage.textContent =
-                error.message;
+            mostraErrore(
+                loginMessage,
+                error.message
+            );
 
             return;
         }
 
 
-        loginMessage.textContent = "";
+        loginMessage.textContent =
+            "";
 
         mostraAreaAdmin();
 
-        caricaDitte();
-        caricaPrenotazioni();
-        caricaGiorniBloccati();
-
+        await Promise.all([
+            caricaDitte(),
+            caricaPrenotazioni(),
+            caricaGiorniBloccati()
+        ]);
     }
 );
-
-
-// ========================================
-// MOSTRA AREA ADMIN
-// ========================================
-
-function mostraAreaAdmin() {
-
-    loginArea.classList.add("hidden");
-
-    adminArea.classList.remove("hidden");
-
-}
 
 
 // ========================================
@@ -135,16 +217,19 @@ async function controllaSessione() {
     } = await supabaseClient.auth.getSession();
 
 
-    if (session) {
-
-        mostraAreaAdmin();
-
-        caricaDitte();
-        caricaPrenotazioni();
-        caricaGiorniBloccati();
-        
+    if (!session) {
+        return;
     }
 
+
+    mostraAreaAdmin();
+
+
+    await Promise.all([
+        caricaDitte(),
+        caricaPrenotazioni(),
+        caricaGiorniBloccati()
+    ]);
 }
 
 
@@ -156,44 +241,68 @@ logoutButton.addEventListener(
     "click",
     async function () {
 
-        await supabaseClient.auth.signOut();
+        logoutButton.disabled =
+            true;
 
-        adminArea.classList.add("hidden");
 
-        loginArea.classList.remove("hidden");
+        const { error } =
+            await supabaseClient.auth.signOut();
 
+
+        logoutButton.disabled =
+            false;
+
+
+        if (error) {
+
+            console.error(
+                "Errore logout:",
+                error.message
+            );
+
+            return;
+        }
+
+
+        mostraAreaLogin();
+
+        loginMessage.textContent =
+            "";
     }
 );
 
 
 // ========================================
-// APRI FORM
+// APRI FORM NUOVA DITTA
 // ========================================
 
 addCompanyButton.addEventListener(
     "click",
     function () {
 
-        companyForm.classList.remove("hidden");
+        companyForm.classList.remove(
+            "hidden"
+        );
 
-        companyMessage.textContent = "";
-
+        companyMessage.textContent =
+            "";
     }
 );
 
 
 // ========================================
-// CHIUDI FORM
+// CHIUDI FORM NUOVA DITTA
 // ========================================
 
 cancelCompanyButton.addEventListener(
     "click",
     function () {
 
-        companyForm.classList.add("hidden");
+        companyForm.classList.add(
+            "hidden"
+        );
 
         pulisciForm();
-
     }
 );
 
@@ -248,23 +357,27 @@ saveCompanyButton.addEventListener(
         }
 
 
+        saveCompanyButton.disabled =
+            true;
+
+
         const { error } =
             await supabaseClient
                 .from("companies")
-                .insert([
-                    {
-                        nome_ditta: nome,
-                        codice_univoco: codice,
-                        numero_giorni: giorni
-                    }
-                ]);
+                .insert({
+                    nome_ditta: nome,
+                    codice_univoco: codice,
+                    numero_giorni: giorni
+                });
+
+
+        saveCompanyButton.disabled =
+            false;
 
 
         if (error) {
 
-            if (
-                error.code === "23505"
-            ) {
+            if (error.code === "23505") {
 
                 companyMessage.textContent =
                     "Questo codice univoco esiste già.";
@@ -272,21 +385,26 @@ saveCompanyButton.addEventListener(
             } else {
 
                 companyMessage.textContent =
+                    "Errore: " +
                     error.message;
-                
-                console.error(error);
+
+                console.error(
+                    "Errore aggiunta ditta:",
+                    error.message
+                );
             }
 
             return;
         }
 
 
-        companyForm.classList.add("hidden");
+        companyForm.classList.add(
+            "hidden"
+        );
 
         pulisciForm();
 
-        caricaDitte();
-
+        await caricaDitte();
     }
 );
 
@@ -318,62 +436,72 @@ async function caricaDitte() {
         companiesList.innerHTML =
             "<tr><td colspan='4'>Errore nel caricamento.</td></tr>";
 
+        console.error(
+            "Errore caricamento ditte:",
+            error.message
+        );
+
         return;
     }
 
 
-    companiesList.innerHTML = "";
+    companiesList.innerHTML =
+        "";
 
 
-    data.forEach(function (company) {
+    data.forEach(
+        function (company) {
 
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>${escapeHtml(company.nome_ditta)}</td>
-
-            <td>${escapeHtml(company.codice_univoco)}</td>
-
-            <td>${company.numero_giorni}</td>
-
-            <td>
-                <button
-                    class="delete-button"
-                    data-id="${company.id}"
-                >
-                    Elimina
-                </button>
-            </td>
-
-        `;
+            const row =
+                document.createElement("tr");
 
 
-        companiesList.appendChild(row);
-
-    });
-
-
-    document
-        .querySelectorAll(".delete-button")
-        .forEach(function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    eliminaDitta(
-                        button.dataset.id
-                    );
-
-                }
+            row.appendChild(
+                creaCella(
+                    company.nome_ditta
+                )
             );
 
-        });
 
+            row.appendChild(
+                creaCella(
+                    company.codice_univoco
+                )
+            );
+
+
+            row.appendChild(
+                creaCella(
+                    company.numero_giorni
+                )
+            );
+
+
+            const actionCell =
+                document.createElement("td");
+
+
+            actionCell.appendChild(
+                creaPulsanteElimina(
+                    "delete-button",
+                    company.id,
+                    eliminaDitta
+                )
+            );
+
+
+            row.appendChild(
+                actionCell
+            );
+
+
+            companiesList.appendChild(
+                row
+            );
+        }
+    );
 }
+
 
 // ========================================
 // CARICA PRENOTAZIONI
@@ -409,18 +537,22 @@ async function caricaPrenotazioni() {
             "<tr><td colspan='4'>Errore nel caricamento delle prenotazioni.</td></tr>";
 
         console.error(
-            "Errore prenotazioni:",
-            error
+            "Errore caricamento prenotazioni:",
+            error.message
         );
 
         return;
     }
 
 
-    bookingsList.innerHTML = "";
+    bookingsList.innerHTML =
+        "";
 
 
-    if (!data || data.length === 0) {
+    if (
+        !data ||
+        data.length === 0
+    ) {
 
         bookingsList.innerHTML =
             "<tr><td colspan='4'>Nessuna prenotazione.</td></tr>";
@@ -429,65 +561,60 @@ async function caricaPrenotazioni() {
     }
 
 
-    data.forEach(function (booking) {
+    data.forEach(
+        function (booking) {
 
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHtml(
-                    booking.companies?.nome_ditta || ""
-                )}
-            </td>
-
-            <td>
-                ${booking.start_date}
-            </td>
-
-            <td>
-                ${booking.end_date}
-            </td>
-
-            <td>
-
-                <button
-                    class="delete-booking-button"
-                    data-id="${booking.id}"
-                >
-                    Elimina
-                </button>
-
-            </td>
-
-        `;
+            const row =
+                document.createElement("tr");
 
 
-        bookingsList.appendChild(row);
-
-    });
-
-
-    document
-        .querySelectorAll(".delete-booking-button")
-        .forEach(function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    eliminaPrenotazione(
-                        button.dataset.id
-                    );
-
-                }
+            row.appendChild(
+                creaCella(
+                    booking.companies?.nome_ditta ||
+                    ""
+                )
             );
 
-        });
 
+            row.appendChild(
+                creaCella(
+                    booking.start_date
+                )
+            );
+
+
+            row.appendChild(
+                creaCella(
+                    booking.end_date
+                )
+            );
+
+
+            const actionCell =
+                document.createElement("td");
+
+
+            actionCell.appendChild(
+                creaPulsanteElimina(
+                    "delete-booking-button",
+                    booking.id,
+                    eliminaPrenotazione
+                )
+            );
+
+
+            row.appendChild(
+                actionCell
+            );
+
+
+            bookingsList.appendChild(
+                row
+            );
+        }
+    );
 }
+
 
 // ========================================
 // CARICA GIORNI BLOCCATI
@@ -517,18 +644,22 @@ async function caricaGiorniBloccati() {
             "<tr><td colspan='3'>Errore nel caricamento dei giorni bloccati.</td></tr>";
 
         console.error(
-            "Errore giorni bloccati:",
-            error
+            "Errore caricamento giorni bloccati:",
+            error.message
         );
 
         return;
     }
 
 
-    blockedDaysList.innerHTML = "";
+    blockedDaysList.innerHTML =
+        "";
 
 
-    if (!data || data.length === 0) {
+    if (
+        !data ||
+        data.length === 0
+    ) {
 
         blockedDaysList.innerHTML =
             "<tr><td colspan='3'>Nessun giorno bloccato.</td></tr>";
@@ -537,59 +668,52 @@ async function caricaGiorniBloccati() {
     }
 
 
-    data.forEach(function (blockedDay) {
+    data.forEach(
+        function (blockedDay) {
 
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${blockedDay.blocked_date}
-            </td>
-
-            <td>
-                ${escapeHtml(blockedDay.reason)}
-            </td>
-
-            <td>
-
-                <button
-                    class="delete-blocked-day-button"
-                    data-id="${blockedDay.id}"
-                >
-                    Elimina
-                </button>
-
-            </td>
-
-        `;
+            const row =
+                document.createElement("tr");
 
 
-        blockedDaysList.appendChild(row);
-
-    });
-
-
-    document
-        .querySelectorAll(".delete-blocked-day-button")
-        .forEach(function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    eliminaGiornoBloccato(
-                        button.dataset.id
-                    );
-
-                }
+            row.appendChild(
+                creaCella(
+                    blockedDay.blocked_date
+                )
             );
 
-        });
 
+            row.appendChild(
+                creaCella(
+                    blockedDay.reason
+                )
+            );
+
+
+            const actionCell =
+                document.createElement("td");
+
+
+            actionCell.appendChild(
+                creaPulsanteElimina(
+                    "delete-blocked-day-button",
+                    blockedDay.id,
+                    eliminaGiornoBloccato
+                )
+            );
+
+
+            row.appendChild(
+                actionCell
+            );
+
+
+            blockedDaysList.appendChild(
+                row
+            );
+        }
+    );
 }
+
 
 // ========================================
 // AGGIUNGI GIORNO BLOCCATO
@@ -630,15 +754,21 @@ addBlockedDayButton.addEventListener(
         }
 
 
+        addBlockedDayButton.disabled =
+            true;
+
+
         const { error } =
             await supabaseClient
                 .from("blocked_days")
-                .insert([
-                    {
-                        blocked_date: date,
-                        reason: reason
-                    }
-                ]);
+                .insert({
+                    blocked_date: date,
+                    reason: reason
+                });
+
+
+        addBlockedDayButton.disabled =
+            false;
 
 
         if (error) {
@@ -651,11 +781,12 @@ addBlockedDayButton.addEventListener(
             } else {
 
                 blockedDayMessage.textContent =
-                    "Errore: " + error.message;
+                    "Errore: " +
+                    error.message;
 
                 console.error(
                     "Errore aggiunta giorno bloccato:",
-                    error
+                    error.message
                 );
             }
 
@@ -667,18 +798,20 @@ addBlockedDayButton.addEventListener(
             "blocked-date"
         ).value = "";
 
+
         document.getElementById(
             "blocked-reason"
         ).value = "";
+
 
         blockedDayMessage.textContent =
             "Giorno bloccato aggiunto.";
 
 
-        caricaGiorniBloccati();
-
+        await caricaGiorniBloccati();
     }
 );
+
 
 // ========================================
 // ELIMINA GIORNO BLOCCATO
@@ -712,16 +845,16 @@ async function eliminaGiornoBloccato(id) {
 
         console.error(
             "Errore eliminazione giorno bloccato:",
-            error
+            error.message
         );
 
         return;
     }
 
 
-    caricaGiorniBloccati();
-
+    await caricaGiorniBloccati();
 }
+
 
 // ========================================
 // ELIMINA PRENOTAZIONE
@@ -755,15 +888,14 @@ async function eliminaPrenotazione(id) {
 
         console.error(
             "Errore eliminazione prenotazione:",
-            error
+            error.message
         );
 
         return;
     }
 
 
-    caricaPrenotazioni();
-
+    await caricaPrenotazioni();
 }
 
 
@@ -797,12 +929,18 @@ async function eliminaDitta(id) {
             "Errore durante l'eliminazione."
         );
 
+        console.error(
+            "Errore eliminazione ditta:",
+            error.message
+        );
+
         return;
     }
 
 
-    caricaDitte();
+    await caricaDitte();
 
+    await caricaPrenotazioni();
 }
 
 
@@ -824,24 +962,8 @@ function pulisciForm() {
         "company-days"
     ).value = "";
 
-    companyMessage.textContent = "";
-
-}
-
-
-// ========================================
-// PROTEZIONE TESTO HTML
-// ========================================
-
-function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-
+    companyMessage.textContent =
+        "";
 }
 
 
